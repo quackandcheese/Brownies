@@ -11,10 +11,10 @@ using UnityEngine;
 
 namespace KitchenBrownies.Customs
 {
-    class BrownieBatter : CustomItemGroup<MyItemGroupView>
+    class BrownieBatter : CustomItemGroup<BrownieBatterItemGroupView>
     {
         public override string UniqueNameID => "Brownie Batter";
-        public override GameObject Prefab => Mod.bundle.LoadAsset<GameObject>("BrownieBatter");
+        public override GameObject Prefab => Mod.Bundle.LoadAsset<GameObject>("BrownieBatter");
         public override ItemCategory ItemCategory => ItemCategory.Generic;
         public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
         public override string ColourBlindTag => "BB";
@@ -25,6 +25,7 @@ namespace KitchenBrownies.Customs
             {
                 Max = 1,
                 Min = 1,
+                IsMandatory = true,
                 Items = new List<Item>()
                 {
                     Mod.Flour
@@ -53,7 +54,7 @@ namespace KitchenBrownies.Customs
         {
             new Item.ItemProcess
             {
-                Duration = 6,
+                Duration = 20,
                 Process = Mod.Cook,
                 Result = Mod.CookedBrownie
             }
@@ -77,10 +78,10 @@ namespace KitchenBrownies.Customs
             materials[2] = CustomMaterials.CustomMaterialsIndex["IngredientLib - \"Chocolate Light\""];
             MaterialUtils.ApplyMaterial(Prefab, "Chocolate", materials);
 
-            Prefab.GetComponent<MyItemGroupView>()?.Setup(Prefab);
+            Prefab.GetComponent<BrownieBatterItemGroupView>()?.Setup(Prefab);
         }
     }
-    public class MyItemGroupView : ItemGroupView
+    public class BrownieBatterItemGroupView : ItemGroupView
     {
         internal void Setup(GameObject prefab) =>
             // This tells which sub-object of the prefab corresponds to each component of the ItemGroup

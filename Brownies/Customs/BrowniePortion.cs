@@ -13,22 +13,13 @@ namespace KitchenBrownies.Customs
     class BrowniePortion : CustomItem
     {
         public override string UniqueNameID => "Brownie Portion";
-        public override GameObject Prefab => Mod.bundle.LoadAsset<GameObject>("BrowniePortion");
+        public override GameObject Prefab => Mod.Bundle.LoadAsset<GameObject>("BrowniePortion");
         public override ItemCategory ItemCategory => ItemCategory.Generic;
         public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
         public override ItemValue ItemValue => ItemValue.Small;
         public override string ColourBlindTag => "B";
 
-        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
-        {
-            new Item.ItemProcess
-            {
-                Duration = 7,
-                Process = Mod.Cook,
-                IsBad = true,
-                Result = Mod.Burnt
-            }
-        };
+
 
         public override void OnRegister(GameDataObject gameDataObject)
         {

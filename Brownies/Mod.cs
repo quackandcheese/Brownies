@@ -10,6 +10,7 @@ using System.Reflection;
 using UnityEngine;
 using System;
 using KitchenBrownies.Customs;
+using KitchenLib.Customs;
 
 // Namespace should have "Kitchen" in the beginning
 namespace KitchenBrownies
@@ -21,7 +22,7 @@ namespace KitchenBrownies
         // Mod Version must follow semver notation e.g. "1.2.3"
         public const string MOD_GUID = "QuackAndCheese.PlateUp.Brownies";
         public const string MOD_NAME = "Brownies";
-        public const string MOD_VERSION = "0.1.0";
+        public const string MOD_VERSION = "0.1.2";
         public const string MOD_AUTHOR = "QuackAndCheese";
         public const string MOD_GAMEVERSION = ">=1.1.3";
         // Game version this mod is designed for in semver
@@ -35,18 +36,22 @@ namespace KitchenBrownies
         public const bool DEBUG_MODE = false;
 #endif
 
-        public static AssetBundle bundle;
+        public static AssetBundle Bundle;
 
         // Vanilla Processes
         internal static Process Cook => GetExistingGDO<Process>(ProcessReferences.Cook);
         internal static Process Chop => GetExistingGDO<Process>(ProcessReferences.Chop);
         internal static Process Knead => GetExistingGDO<Process>(ProcessReferences.Knead);
+        internal static Process RequireOven => GetExistingGDO<Process>(ProcessReferences.RequireOven);
 
         // Vanilla Items
         internal static Item Flour => GetExistingGDO<Item>(ItemReferences.Flour);
         internal static Item Egg => GetExistingGDO<Item>(ItemReferences.Egg);
         internal static Item CrackedEgg => GetExistingGDO<Item>(ItemReferences.EggCracked);
         internal static Item Burnt => GetExistingGDO<Item>(ItemReferences.BurnedFood);
+        internal static Item Nuts => GetExistingGDO<Item>(ItemReferences.NutsIngredient);
+        internal static Item ChoppedNuts => GetExistingGDO<Item>(ItemReferences.NutsChopped);
+        internal static Item VanillaIceCream => GetExistingGDO<Item>(ItemReferences.IceCreamVanilla);
 
         // Modded Items
         public static Item Chocolate => Find<Item>(IngredientLib.References.GetIngredient("chocolate"));
@@ -55,12 +60,18 @@ namespace KitchenBrownies
         internal static Item BrowniePortion => GetModdedGDO<Item, BrowniePortion>();
         internal static ItemGroup BrownieBatter => GetModdedGDO<ItemGroup, BrownieBatter>();
         internal static Item CookedBrownie => GetModdedGDO<Item, CookedBrownie>();
+        internal static ItemGroup BrownieALaMode => GetModdedGDO<ItemGroup, BrownieALaMode>();
+
+        // Modded Dishes
+        internal static Dish BrownieDish => GetModdedGDO<Dish, BrownieDish>();
+        internal static Dish BrownieALaModeDish => GetModdedGDO<Dish, BrownieALaModeDish>();
 
 
         public Mod() : base(MOD_GUID, MOD_NAME, MOD_AUTHOR, MOD_VERSION, MOD_GAMEVERSION, Assembly.GetExecutingAssembly()) { }
 
         protected override void OnInitialise()
         {
+
             LogWarning($"{MOD_GUID} v{MOD_VERSION} in use!");
         }
 
@@ -68,10 +79,16 @@ namespace KitchenBrownies
         {
             LogInfo("Attempting to register game data...");
 
+            // Dishes
             AddGameDataObject<BrownieDish>();
+            AddGameDataObject<BrownieALaModeDish>();
+
+            // Items
             AddGameDataObject<BrownieBatter>();
             AddGameDataObject<BrowniePortion>();
             AddGameDataObject<CookedBrownie>();
+            AddGameDataObject<BrownieALaMode>();
+            
 
             LogInfo("Done loading game data.");
         }
@@ -86,7 +103,7 @@ namespace KitchenBrownies
             // TODO: Also, make sure to set EnableAssetBundleDeploy to 'true' in your ModName.csproj
 
             LogInfo("Attempting to load asset bundle...");
-            bundle = mod.GetPacks<AssetBundleModPack>().SelectMany(e => e.AssetBundles).First();
+            Bundle = mod.GetPacks<AssetBundleModPack>().SelectMany(e => e.AssetBundles).First();
             LogInfo("Done loading asset bundle.");
 
             // Register custom GDOs
@@ -95,6 +112,8 @@ namespace KitchenBrownies
             // Perform actions when game data is built
             Events.BuildGameDataEvent += delegate (object s, BuildGameDataEventArgs args)
             {
+                // Fix bug with card requirements
+                Find<Unlock, BrownieALaModeDish>().BlockedBy.Clear();
             };
         }
 
@@ -109,6 +128,16 @@ namespace KitchenBrownies
         internal static T Find<T>(int id) where T : GameDataObject
         {
             return (T)GDOUtils.GetExistingGDO(id) ?? (T)GDOUtils.GetCustomGameDataObject(id)?.GameDataObject;
+        }
+
+        internal static T Find<T, C>() where T : GameDataObject where C : CustomGameDataObject
+        {
+            return GDOUtils.GetCastedGDO<T, C>();
+        }
+
+        internal static T Find<T>(string modName, string name) where T : GameDataObject
+        {
+            return GDOUtils.GetCastedGDO<T>(modName, name);
         }
 
         #region Logging

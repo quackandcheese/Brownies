@@ -33,13 +33,24 @@ namespace KitchenBrownies.Customs
     public class CookedBrownie : CustomItem
     {
         public override string UniqueNameID => "Cooked Brownie";
-        public override GameObject Prefab => Mod.bundle.LoadAsset<GameObject>("CookedBrownie");
+        public override GameObject Prefab => Mod.Bundle.LoadAsset<GameObject>("CookedBrownie");
         public override bool AllowSplitMerging => false;
         public override float SplitSpeed => 0.75f;
         public override int SplitCount => 5;
         public override Item SplitSubItem => Mod.BrowniePortion;
         public override List<Item> SplitDepletedItems => new() { Mod.BrowniePortion };
         public override bool PreventExplicitSplit => false;
+
+        public override List<Item.ItemProcess> Processes => new List<Item.ItemProcess>
+        {
+            new Item.ItemProcess
+            {
+                Duration = 10,
+                Process = Mod.Cook,
+                IsBad = true,
+                Result = Mod.Burnt
+            }
+        };
 
 
         public override void OnRegister(GameDataObject gameDataObject)
