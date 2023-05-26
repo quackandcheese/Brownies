@@ -22,7 +22,7 @@ namespace KitchenBrownies
         // Mod Version must follow semver notation e.g. "1.2.3"
         public const string MOD_GUID = "QuackAndCheese.PlateUp.Brownies";
         public const string MOD_NAME = "Brownies";
-        public const string MOD_VERSION = "0.1.2";
+        public const string MOD_VERSION = "0.1.4";
         public const string MOD_AUTHOR = "QuackAndCheese";
         public const string MOD_GAMEVERSION = ">=1.1.3";
         // Game version this mod is designed for in semver
@@ -56,6 +56,7 @@ namespace KitchenBrownies
         // Modded Items
         public static Item Chocolate => Find<Item>(IngredientLib.References.GetIngredient("chocolate"));
         public static Item ChoppedChocolate => Find<Item>(IngredientLib.References.GetIngredient("chopped chocolate"));
+        public static Item ChocolateShavings => Find<Item>(IngredientLib.References.GetIngredient("chocolate shavings"));
 
         internal static Item BrowniePortion => GetModdedGDO<Item, BrowniePortion>();
         internal static ItemGroup BrownieBatter => GetModdedGDO<ItemGroup, BrownieBatter>();
@@ -71,7 +72,6 @@ namespace KitchenBrownies
 
         protected override void OnInitialise()
         {
-
             LogWarning($"{MOD_GUID} v{MOD_VERSION} in use!");
         }
 
@@ -91,10 +91,6 @@ namespace KitchenBrownies
             
 
             LogInfo("Done loading game data.");
-        }
-
-        protected override void OnUpdate()
-        {
         }
 
         protected override void OnPostActivate(KitchenMods.Mod mod)

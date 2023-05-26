@@ -46,7 +46,8 @@ namespace KitchenBrownies.Customs
                 Min = 1,
                 Items = new List<Item>()
                 {
-                    Mod.ChoppedChocolate
+                    Mod.ChoppedChocolate,
+                    Mod.ChocolateShavings
                 }
             }
         };

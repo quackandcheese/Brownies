@@ -18,7 +18,7 @@ namespace KitchenBrownies.Customs
         public override GameObject Prefab => Mod.Bundle.LoadAsset<GameObject>("BrownieALaMode");
         public override ItemCategory ItemCategory => ItemCategory.Generic;
         public override ItemStorage ItemStorageFlags => ItemStorage.StackableFood;
-        public override ItemValue ItemValue => ItemValue.Small;
+        public override ItemValue ItemValue => ItemValue.Medium;
 
         public override List<ItemGroup.ItemSet> Sets => new List<ItemGroup.ItemSet>()
         {
